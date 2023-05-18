@@ -2,29 +2,34 @@ import React, { useEffect, useState } from 'react'
 import { Title } from '../components/Title';
 import { Button, ListGroup, Row, Table } from 'react-bootstrap';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { addManyGamesAction, removeGameAction } from '../store/gameReducer';
 
 const DiscoverGames = () => {
 const title = "Главная страница";
 
-const [games, setGames] = useState([])
+const dispatch = useDispatch();
+const games = useSelector(state => state.games.games);
 
-
-const $host = axios.create({
-    baseURL: process.env.REACT_APP_API_URL
-})    
-
+//Функция загрузки данных с сервера
 const fetchGames = async () => {
+    const $host = axios.create({
+        baseURL: process.env.REACT_APP_API_URL
+    })   
     const {data} = await $host.get('api/v1/games')
-    return data
+    console.log(data.content)
+    dispatch(addManyGamesAction(data.content))
 }
 
-useEffect(() => {
-    fetchGames().then(data => setGames(data.content))
-})
+//удаление игры с состояния
+const removeGame = (slug) => {
+    dispatch(removeGameAction(slug))
+}
 
-const data = fetch('https://jsonplaceholder.typicode.com/todos/1')
-      .then(response => response.json())
-      .then(json => console.log(json))
+//загрузка данных с сервера
+useEffect(() => {
+    fetchGames()
+}, [])
 
   return (
     <div>
@@ -45,7 +50,7 @@ const data = fetch('https://jsonplaceholder.typicode.com/todos/1')
                             <td>{game.title}</td>
                             <td>{game.author}</td>
                             <td>{game.description}</td>
-                            <Button> Удалить </Button>
+                            <Button onClick={() => removeGame(game.slug)}> Удалить </Button>
                         </tr>
                     )}
             </tbody>

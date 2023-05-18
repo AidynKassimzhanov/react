@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGames } from '../store/reducers/action';
 import { Button } from 'react-bootstrap';
 import { addCustomerAction, removeCustomerAction } from '../store/customerReducer';
+import { fetchCustomers } from '../asyncAction/customers';
 
 
 const ReduxComponent = () => {
@@ -29,6 +30,7 @@ const ReduxComponent = () => {
     const removeCustomer = (customer) => {
       dispatch(removeCustomerAction(customer.id))
     }
+    
   // useEffect(() => {
     //     dispatch(fetchGames());
     //   }, []);
@@ -42,7 +44,7 @@ const ReduxComponent = () => {
         <Button onClick={() => getCash(Number(prompt()))}>Снять с баланса</Button>
 
         <Button onClick={() => addCustomer(prompt())}>Добавить клиента</Button>
-        <Button onClick={() => getCash(Number(prompt()))}>Удалить клиента</Button>
+        <Button onClick={() => dispatch(fetchCustomers())}>Добавить клиентов</Button>
       </div>
 
       {customers.length > 0 ?
